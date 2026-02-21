@@ -1,0 +1,51 @@
+{
+    "name": "mhshagor/image-picker",
+    "description": "Image Picker - Beautiful image picker for managing images",
+    "keywords": [
+        "laravel",
+        "image-picker"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": "^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        
+    },
+    "autoload": {
+        "psr-4": {
+            "Mhshagor\\ImagePicker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mhshagor\\ImagePicker\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mhshagor\\ImagePicker\\Providers\\ImagePickerServiceProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "M.H SHAGOR",
+            "email": "srq001100@gmail.com"
+        }
+    ],
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
