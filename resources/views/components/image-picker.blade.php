@@ -10,14 +10,12 @@
     'label' => '',
     'labelClass' => '',
     'required' => false,
-    'errorClass' => '',
 ])
 
 @php
     $id = $id ? $id : $name;
-    $labelClass = $labelClass ?? '';
-    if ($required) $labelClass .= ' required';
-    if ($errorClass) $labelClass .= ' ' . $errorClass;
+    $labelClass .= $required ? ' required' : '';
+    $labelClass .= $errors->has($name) ? ' !text-red-500' : '';
     $previewType = $type === 'file' ? ($previewType === 'dropdown' ? 'dropdown' : 'file') : $previewType;
 @endphp
 <div class="space-y-1">
@@ -40,7 +38,7 @@
         data-preview="{{ $preview ? 'true' : 'false' }}"
         data-preview-type="{{ $previewType }}"
     ></div>
-    @if ($errorClass)
-        <p class="text-red-500 text-xs mt-1">{{ $errorClass }}</p>
-    @endif
+    @error($name)
+        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+    @enderror
 </div>
