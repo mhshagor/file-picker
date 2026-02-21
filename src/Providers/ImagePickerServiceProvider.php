@@ -20,8 +20,11 @@ class ImagePickerServiceProvider extends ServiceProvider {
 
     protected function registerPublishing(): void {
         $this->publishes([
-            __DIR__ . '/../../resources/views/components' => resource_path('views/vendor/image-picker/components'),
-        ], 'image-picker-views');
-
+            __DIR__ . '/../../resources/views/components' => resource_path('views/components/shagor/image-picker'),
+        ], 'image-picker');
+        
+        $this->publishes([
+            __DIR__ . '/../../public/js' => public_path('js/image-picker'),
+        ], 'image-picker');
     }
 }
