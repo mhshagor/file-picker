@@ -36,6 +36,14 @@ Add this line to your `resources/js/app.js`:
 import "./sqd/image-picker.js";
 ```
 
+### Add to your app.css
+
+Add this line to your `resources/css/app.css`:
+
+```css
+@import "./sqd/image-picker.css";
+```
+
 ### 4. Compile your assets
 
 ```bash

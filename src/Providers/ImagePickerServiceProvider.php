@@ -24,7 +24,7 @@ class ImagePickerServiceProvider extends ServiceProvider {
         ], 'image-picker');
         
         $this->publishes([
-            __DIR__ . '/../../public/js' => \resource_path('js/sqd'),
+            __DIR__ . '/../../resources/js' => \resource_path('js/sqd'),
         ], 'image-picker');
         
         $this->publishes([
