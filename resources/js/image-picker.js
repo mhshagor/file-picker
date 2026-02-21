@@ -140,15 +140,15 @@ document.addEventListener("DOMContentLoaded", () => {
             newFiles.forEach((file) => {
                 // Type validation
                 if (this.type === "image" && !file.type.startsWith("image/")) {
-                    //this.showError(`Invalid file type. ${file.name} is not an image.`);
-                    alert(`Invalid file type. ${file.name} is not an image.`);
+                    this.showError(`Invalid file type.`);
+                //    showToast('error', `Invalid file type. ${file.name} is not an image.`);
                     return;
                 }
 
                 // Max size validation
                 if (file.size / 1024 / 1024 > this.maxSizeMB) {
-                    //this.showError(`File ${file.name} is too large. Maximum size is ${this.maxSizeMB} MB.`);
-                    alert(`File ${file.name} is too large. Maximum size is ${this.maxSizeMB} MB.`);
+                    this.showError(`The file is too large. Maximum size is ${this.maxSizeMB} MB.`);
+                    //showToast('error', `File ${file.name} is too large. Maximum size is ${this.maxSizeMB} MB.`);
                     return;
                 }
 
