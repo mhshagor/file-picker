@@ -5,6 +5,7 @@
         "laravel",
         "image-picker"
     ],
+    "version": "1.0.0",
     "type": "library",
     "license": "MIT",
     "require": {
