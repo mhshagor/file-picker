@@ -26,22 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         createDropArea() {
             this.dropArea = document.createElement("div");
-            this.dropArea.className = `
-        base-input border-dashed cursor-pointer bg-gray-100 
-        hover:bg-gray-200 hover:border-blue-400 transition
-        relative flex items-center justify-center px-3 py-3
-    `;
+            this.dropArea.className = 'base-input image-picker-drop-area';
 
             this.dropArea.innerHTML = `
-        <span class="text-gray-500 text-xs pointer-events-none">
+        <span class="image-picker-drop-text">
             Drag & drop files or click to select
         </span>
 
-        <div class="absolute right-3 flex items-center gap-2 hidden" data-dropdown-trigger>
-            <span class="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full" data-count>0</span>
+        <div class="image-picker-dropdown-trigger hidden" data-dropdown-trigger>
+            <span class="image-picker-count-badge" data-count>0</span>
 
             <svg xmlns="http://www.w3.org/2000/svg"
-                 class="w-4 h-4 transition"
+                 class="image-picker-arrow"
                  data-arrow
                  fill="none"
                  viewBox="0 0 24 24"
@@ -77,10 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         createGallery() {
             this.gallery = document.createElement("div");
-            this.gallery.className = "mt-1 flex flex-wrap gap-2";
+            this.gallery.className = "image-picker-gallery";
             if (this.previewType === "dropdown") {
                 this.gallery.className =
-                    "absolute z-50 bg-white border rounded shadow mt-1 hidden w-full max-h-48 overflow-auto text-sm";
+                    "image-picker-gallery dropdown";
                 this.gallery.style.top = "100%";
                 this.gallery.style.left = "0";
 
@@ -99,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             } else {
                 if (["list", "file"].includes(this.previewType)) {
-                    this.gallery.className = "mt-1 flex flex-col gap-2";
+                    this.gallery.className = "image-picker-gallery list";
                 }
             }
             this.container.appendChild(this.gallery);
@@ -119,12 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
             );
             ["dragenter", "dragover"].forEach((event) =>
                 this.dropArea.addEventListener(event, () =>
-                    this.dropArea.classList.add("border-blue-400"),
+                    this.dropArea.classList.add("drag-over"),
                 ),
             );
             ["dragleave", "drop"].forEach((event) =>
                 this.dropArea.addEventListener(event, () =>
-                    this.dropArea.classList.remove("border-blue-400"),
+                    this.dropArea.classList.remove("drag-over"),
                 ),
             );
 
@@ -141,13 +137,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Type validation
                 if (this.type === "image" && !file.type.startsWith("image/")) {
                     this.showError(`Invalid file type.`);
-                //    showToast('error', `Invalid file type. ${file.name} is not an image.`);
+                    //showToast('error', `Invalid file type. ${file.name} is not an image.`);
                     return;
                 }
 
                 // Max size validation
                 if (file.size / 1024 / 1024 > this.maxSizeMB) {
-                    this.showError(`The file is too large. Maximum size is ${this.maxSizeMB} MB.`);
+                    this.showError(`The file is too large.`);
                     //showToast('error', `File ${file.name} is too large. Maximum size is ${this.maxSizeMB} MB.`);
                     return;
                 }
@@ -169,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     const div = document.createElement("div");
                     div.className =
-                        "relative group border border-gray-300 rounded-lg overflow-hidden p-1";
+                        "image-picker-preview-item";
                     div.draggable = true;
                     const p = document.createElement("p");
                     p.textContent = file.name;
@@ -195,33 +191,33 @@ document.addEventListener("DOMContentLoaded", () => {
             this.files.forEach((file) => {
                 const row = document.createElement("div");
                 row.className =
-                    "flex justify-between items-center px-3 py-2 hover:bg-gray-100 gap-2";
+                    "image-picker-dropdown-row";
 
                 // left section
                 const left = document.createElement("div");
                 left.className =
-                    "flex items-center gap-2 flex-1 overflow-hidden";
+                    "image-picker-dropdown-left";
 
                 // 👉 if image → show thumbnail
                 if (this.type === "image") {
                     const img = document.createElement("img");
                     img.src = URL.createObjectURL(file);
                     img.className =
-                        "w-8 h-8 object-cover rounded border shrink-0";
+                        "image-picker-thumbnail";
                     left.appendChild(img);
                 }
                 // 👉 else show extension badge
                 else {
                     const icon = document.createElement("div");
                     icon.className =
-                        "w-8 h-8 flex items-center justify-center rounded bg-gray-200 text-gray-600 text-xs shrink-0";
+                        "image-picker-file-icon";
                     icon.textContent = file.name.split(".").pop().toUpperCase();
                     left.appendChild(icon);
                 }
 
                 // filename
                 const name = document.createElement("span");
-                name.className = "truncate text-xs";
+                name.className = "image-picker-filename";
                 name.textContent = file.name;
                 left.appendChild(name);
 
@@ -230,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 remove.type = "button";
                 remove.innerHTML = "&times;";
                 remove.className =
-                    "text-red-500 text-xs hover:text-red-700 shrink-0";
+                    "image-picker-remove-btn dropdown";
 
                 remove.onclick = () => {
                     this.files = this.files.filter((f) => f !== file);
@@ -246,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderPreview(file) {
             const div = document.createElement("div");
             div.className =
-                "relative group border border-gray-300 rounded-lg overflow-hidden p-1 text-xs";
+                "image-picker-preview-item";
             div.draggable = true;
 
             // Modular preview rendering
@@ -256,30 +252,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (this.previewType === "grid") {
                     const img = document.createElement("img");
                     img.src = reader.result;
-                    img.className = "w-24 h-24 object-cover rounded";
+                    img.className = "image-picker-thumbnail grid";
                     div.appendChild(img);
                 } else if (this.previewType === "thumbnail") {
                     const img = document.createElement("img");
                     img.src = reader.result;
-                    img.className = "w-12 h-12 object-cover rounded";
+                    img.className = "image-picker-thumbnail small";
                     div.appendChild(img);
                 } else if (this.previewType === "list") {
                     const flexDiv = document.createElement("div");
                     flexDiv.className = "flex items-center gap-2";
                     const img = document.createElement("img");
                     img.src = reader.result;
-                    img.className = "w-6 h-6 object-cover rounded";
+                    img.className = "image-picker-thumbnail large";
                     flexDiv.appendChild(img);
                     const p = document.createElement("p");
                     p.textContent = file.name;
-                    p.className = "truncate";
+                    p.className = "image-picker-filename";
                     flexDiv.appendChild(p);
                     div.appendChild(flexDiv);
                 } else {
                     const link = document.createElement("a");
                     link.href = URL.createObjectURL(file);
                     link.className =
-                        "text-blue-500 hover:text-blue-600 w-full block truncate ";
+                        "image-picker-file-link";
                     link.target = "_blank";
                     link.textContent = file.name;
                     div.appendChild(link);
@@ -291,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
             removeBtn.type = "button";
             removeBtn.innerHTML = "&times;";
             removeBtn.className =
-                "absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition";
+                "image-picker-remove-btn";
             removeBtn.onclick = () => {
                 this.files = this.files.filter((f) => f !== file);
                 div.remove();
@@ -318,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Create new error message
             const errorDiv = document.createElement('div');
-            errorDiv.className = 'image-picker-error text-red-500 text-xs mt-1 p-2 bg-red-50 border border-red-200 rounded';
+            errorDiv.className = 'image-picker-error';
             errorDiv.textContent = message;
             
             // Insert error message after the drop area
