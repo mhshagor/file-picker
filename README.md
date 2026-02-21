@@ -18,6 +18,8 @@ A beautiful and customizable image picker component for Laravel applications wit
 
 ```bash
 composer require mhshagor/image-picker:dev-main
+# or
+composer require mhshagor/image-picker
 ```
 
 ### 2. Publish the assets
