@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
     // image picker
     class ImagePicker {
@@ -13,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
             this.accept = container.dataset.accept;
             this.preview = container.dataset.preview === "true";
             this.previewType = container.dataset.previewType || "grid"; // grid, list, file, thumbnail
+            this.value = container.dataset.value;
 
             this.init();
         }
@@ -22,8 +22,53 @@ document.addEventListener("DOMContentLoaded", () => {
             this.createHiddenInput();
             this.createGallery();
             this.bindEvents();
+            this.loadInitialValues();
         }
+        loadInitialValues() {
+            if (!this.value) return;
 
+            let urls = [];
+
+            try {
+                // Try parse as JSON
+                const parsed = JSON.parse(this.value);
+
+                if (Array.isArray(parsed)) {
+                    urls = parsed;
+                } else {
+                    urls = [parsed]; // single image
+                }
+            } catch {
+                // fallback: if string, maybe comma separated
+                urls =
+                    typeof this.value === "string"
+                        ? this.value.split(",")
+                        : [this.value];
+            }
+
+            urls.forEach((url) => {
+                const fileObj = {
+                    name: url.split("/").pop(),
+                    url: url,
+                    existing: true,
+                };
+
+                // Single file mode → replace
+                if (!this.isMultiple) this.files = [fileObj];
+                else this.files.push(fileObj);
+
+                if (this.preview) {
+                    if (this.previewType === "dropdown") {
+                        this.updateDropdownUI();
+                    } else {
+                        const div = this.renderExistingPreview(fileObj);
+                        this.gallery.appendChild(div);
+                    }
+                }
+            });
+
+            this.attachFilesToForm();
+        }
         createDropArea() {
             this.dropArea = document.createElement("div");
             this.dropArea.className = `
@@ -67,11 +112,12 @@ document.addEventListener("DOMContentLoaded", () => {
             this.fileInput.type = "file";
             this.fileInput.accept = this.accept;
             if (this.isMultiple) this.fileInput.multiple = true;
-            this.fileInput.className = "hidden";
-            this.fileInput.name = this.isMultiple
-                ? this.inputName + "[]"
-                : this.inputName;
-            this.fileInput.id = this.inputId;
+            this.fileInput.setAttribute("hidden", true);
+            this.fileInput.setAttribute(
+                "name",
+                this.isMultiple ? this.inputName + "[]" : this.inputName,
+            );
+            this.fileInput.setAttribute("id", this.inputId);
             this.dropArea.appendChild(this.fileInput);
         }
 
@@ -140,15 +186,21 @@ document.addEventListener("DOMContentLoaded", () => {
             newFiles.forEach((file) => {
                 // Type validation
                 if (this.type === "image" && !file.type.startsWith("image/")) {
-                    this.showError(`Invalid file type.`);
-                    //showToast('error', `Invalid file type. ${file.name} is not an image.`);
+                    //this.showError(`Invalid file type.`);
+                    showToast(
+                        "error",
+                        `Invalid file type. ${file.name} is not an image.`,
+                    );
                     return;
                 }
 
                 // Max size validation
                 if (file.size / 1024 / 1024 > this.maxSizeMB) {
-                    this.showError(`The file is too large.`);
-                    //showToast('error', `File ${file.name} is too large. Maximum size is ${this.maxSizeMB} MB.`);
+                    //this.showError(`The file is too large.`);
+                    showToast(
+                        "error",
+                        `File ${file.name} is too large. Maximum size is ${this.maxSizeMB} MB.`,
+                    );
                     return;
                 }
 
@@ -202,15 +254,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 left.className =
                     "flex items-center gap-2 flex-1 overflow-hidden";
 
-                // 👉 if image → show thumbnail
+                // if image → show thumbnail
                 if (this.type === "image") {
                     const img = document.createElement("img");
-                    img.src = URL.createObjectURL(file);
+                    img.src = file.existing
+                        ? file.url
+                        : URL.createObjectURL(file);
                     img.className =
                         "w-8 h-8 object-cover rounded border shrink-0";
                     left.appendChild(img);
                 }
-                // 👉 else show extension badge
+                // else show extension badge
                 else {
                     const icon = document.createElement("div");
                     icon.className =
@@ -232,11 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 remove.className =
                     "text-red-500 text-xs hover:text-red-700 shrink-0";
 
-                remove.onclick = () => {
-                    this.files = this.files.filter((f) => f !== file);
-                    this.updateDropdownUI();
-                    this.attachFilesToForm();
-                };
+                remove.onclick = () => this.removeFile(file);
 
                 row.appendChild(left);
                 row.appendChild(remove);
@@ -287,43 +337,83 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             // Remove button
-            const removeBtn = document.createElement("button");
-            removeBtn.type = "button";
-            removeBtn.innerHTML = "&times;";
-            removeBtn.className =
-                "absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition";
-            removeBtn.onclick = () => {
-                this.files = this.files.filter((f) => f !== file);
-                div.remove();
-                this.attachFilesToForm();
-            };
+            div.appendChild(this.createRemoveBtn(file, div));
 
-            div.appendChild(removeBtn);
+            return div;
+        }
+        renderExistingPreview(file) {
+            const div = document.createElement("div");
+            div.className =
+                "relative group border border-gray-300 rounded-lg overflow-hidden p-1 text-xs";
+
+            if (this.type === "image") {
+                const img = document.createElement("img");
+                img.src = file.url;
+                img.className = "w-24 h-24 object-cover rounded";
+                div.appendChild(img);
+            } else {
+                const link = document.createElement("a");
+                link.href = file.url;
+                link.textContent = file.name;
+                link.target = "_blank";
+                link.className =
+                    "text-blue-500 hover:text-blue-600 block truncate";
+                div.appendChild(link);
+            }
+
+            // remove button
+            div.appendChild(this.createRemoveBtn(file, div));
 
             return div;
         }
 
+        // Remove button
+        createRemoveBtn(fileObj, div = null, previewType = "") {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.innerHTML = "&times;";
+            btn.className =
+                "absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition";
+
+            btn.onclick = () => this.removeFile(fileObj, div);
+
+            return btn;
+        }
+        removeFile(fileObj, div = null) {
+            this.files = this.files.filter((f) => f !== fileObj);
+            if (div) div.remove();
+            if (this.previewType === "dropdown") this.updateDropdownUI();
+            this.attachFilesToForm();
+        }
+
         attachFilesToForm() {
             const dt = new DataTransfer();
-            this.files.forEach((f) => dt.items.add(f));
+            this.files.forEach((f) => {
+                if (!f.existing) dt.items.add(f);
+            });
             this.fileInput.files = dt.files;
         }
 
         showError(message) {
             // Remove existing error messages
-            const existingError = this.container.querySelector('.image-picker-error');
+            const existingError = this.container.querySelector(
+                ".image-picker-error",
+            );
             if (existingError) {
                 existingError.remove();
             }
 
             // Create new error message
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'image-picker-error text-red-500 text-xs';
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "image-picker-error text-red-500 text-xs";
             errorDiv.textContent = message;
-            
+
             // Insert error message after the drop area
-            this.dropArea.parentNode.insertBefore(errorDiv, this.dropArea.nextSibling);
-            
+            this.dropArea.parentNode.insertBefore(
+                errorDiv,
+                this.dropArea.nextSibling,
+            );
+
             // Auto-remove after 5 seconds
             setTimeout(() => {
                 if (errorDiv.parentNode) {
