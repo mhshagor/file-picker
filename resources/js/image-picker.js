@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Create new error message
             const errorDiv = document.createElement('div');
-            errorDiv.className = 'image-picker-error text-red-500 text-xs mt-1 p-2 bg-red-50 border border-red-200 rounded';
+            errorDiv.className = 'image-picker-error text-red-500 text-xs';
             errorDiv.textContent = message;
             
             // Insert error message after the drop area
