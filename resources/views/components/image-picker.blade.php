@@ -6,7 +6,7 @@
     'max' => 2,
     'type' => 'image', // image, file
     'preview' => true,
-    'previewType' => 'grid', // grid, list, file, thumbnail, dropdown
+    'previewType' => 'dropdown', // grid, list, file, thumbnail, dropdown
     'label' => '',
     'labelClass' => '',
     'required' => false,
