@@ -6,7 +6,7 @@
     'max' => 2,
     'type' => 'image', // image, file
     'preview' => true,
-    'previewType' => 'grid', // grid, list, file, thumbnail, dropdown
+    'previewType' => 'thumbnail', // grid, list, file, thumbnail, dropdown
     'label' => '',
     'labelClass' => '',
     'required' => false,
@@ -16,7 +16,7 @@
 @php
     $id = $id ? $id : $name;
     $labelClass .= $required ? ' required' : '';
-    $labelClass .= $errors->has($name) ? ' !text-red-500' : '';
+    $labelClass .= $errors->has($name) ? ' text-red-500' : '';
     $previewType = $type === 'file' ? ($previewType === 'dropdown' ? 'dropdown' : 'file') : $previewType;
 @endphp
 <div class="space-y-1">
@@ -26,7 +26,7 @@
             class="base-label {{ $labelClass }}"
         >
             {{ headline($label) }} <small
-                class="text-xs {{ $errors->has($name) ? ' !text-red-500' : 'text-gray-500' }}">(Max {{ $max }}
+                class="text-xs {{ $errors->has($name) ? ' text-red-500' : 'text-gray-500' }}">(Max {{ $max }}
                 MB)</small>
         </label>
     @endif

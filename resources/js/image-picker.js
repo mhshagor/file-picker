@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // image picker
     class ImagePicker {
         constructor(container) {
             this.container = container;
@@ -8,10 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
             this.maxSizeMB = parseFloat(container.dataset.max || 2);
             this.inputName = container.dataset.name;
             this.inputId = container.dataset.id;
-            this.type = container.dataset.type; // image or file
-            this.accept = container.dataset.accept;
+            this.type = container.dataset.type || "image"; // image or file
+            this.accept = container.dataset.accept || "";
             this.preview = container.dataset.preview === "true";
-            this.previewType = container.dataset.previewType || "grid"; // grid, list, file, thumbnail
+            this.previewType = container.dataset.previewType || "grid"; // grid, list, dropdown, thumbnail
             this.value = container.dataset.value;
 
             this.init();
@@ -24,22 +23,16 @@ document.addEventListener("DOMContentLoaded", () => {
             this.bindEvents();
             this.loadInitialValues();
         }
+
+        /* ----------------- INITIAL VALUES ----------------- */
         loadInitialValues() {
             if (!this.value) return;
 
             let urls = [];
-
             try {
-                // Try parse as JSON
                 const parsed = JSON.parse(this.value);
-
-                if (Array.isArray(parsed)) {
-                    urls = parsed;
-                } else {
-                    urls = [parsed]; // single image
-                }
+                urls = Array.isArray(parsed) ? parsed : [parsed];
             } catch {
-                // fallback: if string, maybe comma separated
                 urls =
                     typeof this.value === "string"
                         ? this.value.split(",")
@@ -49,11 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
             urls.forEach((url) => {
                 const fileObj = {
                     name: url.split("/").pop(),
-                    url: url,
+                    url,
                     existing: true,
                 };
-
-                // Single file mode → replace
                 if (!this.isMultiple) this.files = [fileObj];
                 else this.files.push(fileObj);
 
@@ -61,45 +52,33 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (this.previewType === "dropdown") {
                         this.updateDropdownUI();
                     } else {
-                        const div = this.renderExistingPreview(fileObj);
-                        this.gallery.appendChild(div);
+                        this.gallery.appendChild(
+                            this.renderExistingPreview(fileObj),
+                        );
                     }
                 }
             });
 
             this.attachFilesToForm();
         }
+
+        /* ----------------- DROP AREA ----------------- */
         createDropArea() {
             this.dropArea = document.createElement("div");
-            this.dropArea.className = `
-        base-input border-dashed cursor-pointer bg-gray-100 
-        hover:bg-gray-200 hover:border-blue-400 transition
-        relative flex items-center justify-center px-3 py-3
-    `;
+            this.dropArea.className = "drop-area";
 
             this.dropArea.innerHTML = `
-        <span class="text-gray-500 text-xs pointer-events-none">
-            Drag & drop files or click to select
-        </span>
-
-        <div class="absolute right-3 flex items-center gap-2 hidden" data-dropdown-trigger>
-            <span class="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full" data-count>0</span>
-
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 class="w-4 h-4 transition"
-                 data-arrow
-                 fill="none"
-                 viewBox="0 0 24 24"
-                 stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M19 9l-7 7-7-7"/>
-            </svg>
+        <span class="drop-area-text">Drag & drop files or click to select</span>
+        <div class="drop-trigger hidden" data-dropdown-trigger>
+          <span class="file-count" data-count>0</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="drop-arrow" data-arrow fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
         </div>
-    `;
+      `;
 
             this.container.appendChild(this.dropArea);
 
-            // references
             this.dropdownTrigger = this.dropArea.querySelector(
                 "[data-dropdown-trigger]",
             );
@@ -107,71 +86,69 @@ document.addEventListener("DOMContentLoaded", () => {
             this.countBadge = this.dropArea.querySelector("[data-count]");
         }
 
+        /* ----------------- FILE INPUT ----------------- */
         createHiddenInput() {
             this.fileInput = document.createElement("input");
             this.fileInput.type = "file";
             this.fileInput.accept = this.accept;
             if (this.isMultiple) this.fileInput.multiple = true;
-            this.fileInput.setAttribute("hidden", true);
-            this.fileInput.setAttribute(
-                "name",
-                this.isMultiple ? this.inputName + "[]" : this.inputName,
-            );
-            this.fileInput.setAttribute("id", this.inputId);
+            this.fileInput.hidden = true;
+            this.fileInput.name = this.isMultiple
+                ? this.inputName + "[]"
+                : this.inputName;
+            this.fileInput.id = this.inputId;
+
             this.dropArea.appendChild(this.fileInput);
         }
 
+        /* ----------------- GALLERY ----------------- */
         createGallery() {
             this.gallery = document.createElement("div");
-            this.gallery.className = "mt-1 flex flex-wrap gap-2";
+            this.gallery.className = "file-gallery";
+
             if (this.previewType === "dropdown") {
-                this.gallery.className =
-                    "absolute z-50 bg-white border rounded shadow mt-1 hidden w-full max-h-48 overflow-auto text-sm";
+                this.gallery.className = "file-gallery dropdown divide-y";
                 this.gallery.style.top = "100%";
                 this.gallery.style.left = "0";
-
                 this.container.classList.add("relative");
 
                 // toggle dropdown
                 this.dropdownTrigger.addEventListener("click", (e) => {
                     e.stopPropagation();
-                    this.gallery.classList.toggle("hidden");
-                    this.arrow.classList.toggle("rotate-180");
+                    this.gallery.classList.toggle("show");
+                    this.arrow.classList.toggle("rotate");
                 });
 
+                this.gallery.addEventListener("click", (e) =>
+                    e.stopPropagation(),
+                );
                 document.addEventListener("click", () => {
-                    this.gallery.classList.add("hidden");
-                    this.arrow.classList.remove("rotate-180");
+                    this.gallery.classList.remove("show");
+                    this.arrow.classList.remove("rotate");
                 });
-            } else {
-                if (["list", "file"].includes(this.previewType)) {
-                    this.gallery.className = "mt-1 flex flex-col gap-2";
-                }
+            } else if (["list", "file"].includes(this.previewType)) {
+                this.gallery.className = "file-gallery list";
             }
+
             this.container.appendChild(this.gallery);
         }
 
+        /* ----------------- EVENTS ----------------- */
         bindEvents() {
-            // Click to open file picker
+            // click to open file picker
             this.dropArea.addEventListener("click", () =>
                 this.fileInput.click(),
             );
 
-            // Drag & drop
-            ["dragenter", "dragover", "dragleave", "drop"].forEach((event) =>
-                this.dropArea.addEventListener(event, (e) =>
-                    e.preventDefault(),
-                ),
+            // drag & drop
+            ["dragenter", "dragover", "dragleave", "drop"].forEach((evt) =>
+                this.dropArea.addEventListener(evt, (e) => e.preventDefault()),
             );
-            ["dragenter", "dragover"].forEach((event) =>
-                this.dropArea.addEventListener(event, () =>
-                    this.dropArea.classList.add("border-blue-400"),
-                ),
+            ["dragenter", "dragover"].forEach(() =>
+                this.dropArea.classList.add("border-blue-400"),
             );
-            ["dragleave", "drop"].forEach((event) =>
-                this.dropArea.addEventListener(event, () =>
-                    this.dropArea.classList.remove("border-blue-400"),
-                ),
+            ["dragleave", "drop"].forEach(() =>
+                this.dropArea.classList.remove("border-blue-400"),
             );
 
             this.dropArea.addEventListener("drop", (e) =>
@@ -182,11 +159,10 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
 
+        /* ----------------- ADD FILES ----------------- */
         addFiles(newFiles) {
             newFiles.forEach((file) => {
-                // Type validation
                 if (this.type === "image" && !file.type.startsWith("image/")) {
-                    //this.showError(`Invalid file type.`);
                     showToast(
                         "error",
                         `Invalid file type. ${file.name} is not an image.`,
@@ -194,12 +170,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // Max size validation
                 if (file.size / 1024 / 1024 > this.maxSizeMB) {
-                    //this.showError(`The file is too large.`);
                     showToast(
                         "error",
-                        `File ${file.name} is too large. Maximum size is ${this.maxSizeMB} MB.`,
+                        `File ${file.name} is too large. Max ${this.maxSizeMB}MB.`,
                     );
                     return;
                 }
@@ -207,21 +181,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!this.isMultiple) {
                     this.files = [file];
                     this.gallery.innerHTML = "";
-                } else {
-                    this.files.push(file);
-                }
+                } else this.files.push(file);
 
                 if (this.preview) {
-                    if (this.previewType === "dropdown") {
+                    if (this.previewType === "dropdown")
                         this.updateDropdownUI();
-                    } else {
-                        const div = this.renderPreview(file);
-                        this.gallery.appendChild(div);
-                    }
+                    else this.gallery.appendChild(this.renderPreview(file));
                 } else {
                     const div = document.createElement("div");
-                    div.className =
-                        "relative group border border-gray-300 rounded-lg overflow-hidden p-1";
+                    div.className = "file-item";
                     div.draggable = true;
                     const p = document.createElement("p");
                     p.textContent = file.name;
@@ -232,153 +200,146 @@ document.addEventListener("DOMContentLoaded", () => {
 
             this.attachFilesToForm();
         }
-        updateDropdownUI() {
-            // show trigger only if files exist
-            if (this.files.length) {
-                this.dropdownTrigger.classList.remove("hidden");
-                this.countBadge.textContent = this.files.length;
-            } else {
-                this.dropdownTrigger.classList.add("hidden");
-                this.gallery.classList.add("hidden");
-            }
 
+        /* ----------------- DROPDOWN UI ----------------- */
+        updateDropdownUI() {
+            this.dropdownTrigger.classList.toggle(
+                "hidden",
+                this.files.length === 0,
+            );
+            this.countBadge.textContent = this.files.length;
             this.gallery.innerHTML = "";
 
             this.files.forEach((file) => {
                 const row = document.createElement("div");
-                row.className =
-                    "flex justify-between items-center px-3 py-2 hover:bg-gray-100 gap-2";
+                row.className = "file-item-row";
 
-                // left section
                 const left = document.createElement("div");
-                left.className =
-                    "flex items-center gap-2 flex-1 overflow-hidden";
+                left.className = "file-info";
 
-                // if image → show thumbnail
                 if (this.type === "image") {
                     const img = document.createElement("img");
                     img.src = file.existing
                         ? file.url
                         : URL.createObjectURL(file);
-                    img.className =
-                        "w-8 h-8 object-cover rounded border shrink-0";
+                    img.className = "file-thumbnail";
                     left.appendChild(img);
-                }
-                // else show extension badge
-                else {
+                } else {
                     const icon = document.createElement("div");
-                    icon.className =
-                        "w-8 h-8 flex items-center justify-center rounded bg-gray-200 text-gray-600 text-xs shrink-0";
+                    icon.className = "file-extension-badge";
                     icon.textContent = file.name.split(".").pop().toUpperCase();
                     left.appendChild(icon);
                 }
 
-                // filename
                 const name = document.createElement("span");
-                name.className = "truncate text-xs";
+                name.className = "file-name";
                 name.textContent = file.name;
                 left.appendChild(name);
 
-                // remove button
                 const remove = document.createElement("button");
                 remove.type = "button";
                 remove.innerHTML = "&times;";
-                remove.className =
-                    "text-red-500 text-xs hover:text-red-700 shrink-0";
-
+                remove.className = "file-remove";
                 remove.onclick = () => this.removeFile(file);
 
                 row.appendChild(left);
                 row.appendChild(remove);
+
                 this.gallery.appendChild(row);
             });
         }
+
+        /* ----------------- PREVIEWS ----------------- */
         renderPreview(file) {
             const div = document.createElement("div");
-            div.className =
-                "relative group border border-gray-300 rounded-lg overflow-hidden p-1 text-xs";
+            div.className = "file-preview-item";
             div.draggable = true;
 
-            // Modular preview rendering
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
-                if (this.previewType === "grid") {
-                    const img = document.createElement("img");
-                    img.src = reader.result;
-                    img.className = "w-24 h-24 object-cover rounded";
-                    div.appendChild(img);
-                } else if (this.previewType === "thumbnail") {
-                    const img = document.createElement("img");
-                    img.src = reader.result;
-                    img.className = "w-12 h-12 object-cover rounded";
-                    div.appendChild(img);
-                } else if (this.previewType === "list") {
-                    const flexDiv = document.createElement("div");
-                    flexDiv.className = "flex items-center gap-2";
-                    const img = document.createElement("img");
-                    img.src = reader.result;
-                    img.className = "w-6 h-6 object-cover rounded";
-                    flexDiv.appendChild(img);
-                    const p = document.createElement("p");
-                    p.textContent = file.name;
-                    p.className = "truncate";
-                    flexDiv.appendChild(p);
-                    div.appendChild(flexDiv);
-                } else {
-                    const link = document.createElement("a");
-                    link.href = URL.createObjectURL(file);
-                    link.className =
-                        "text-blue-500 hover:text-blue-600 w-full block truncate ";
-                    link.target = "_blank";
-                    link.textContent = file.name;
-                    div.appendChild(link);
-                }
+                this.checkPreviewType(div, reader, file);
             };
 
-            // Remove button
             div.appendChild(this.createRemoveBtn(file, div));
-
             return div;
         }
+
         renderExistingPreview(file) {
             const div = document.createElement("div");
-            div.className =
-                "relative group border border-gray-300 rounded-lg overflow-hidden p-1 text-xs";
+            div.className = "file-preview-item";
+            this.checkPreviewType(div, null, file, true);
 
-            if (this.type === "image") {
-                const img = document.createElement("img");
-                img.src = file.url;
-                img.className = "w-24 h-24 object-cover rounded";
-                div.appendChild(img);
-            } else {
-                const link = document.createElement("a");
-                link.href = file.url;
-                link.textContent = file.name;
-                link.target = "_blank";
-                link.className =
-                    "text-blue-500 hover:text-blue-600 block truncate";
-                div.appendChild(link);
-            }
-
-            // remove button
             div.appendChild(this.createRemoveBtn(file, div));
-
             return div;
         }
 
-        // Remove button
-        createRemoveBtn(fileObj, div = null, previewType = "") {
+        checkPreviewType(div, reader, file, existing = false) {
+            const loader = document.createElement("div");
+            loader.className = "file-loader";
+            div.appendChild(loader);
+            if (this.previewType === "grid") {
+                const img = document.createElement("img");
+                img.src = existing ? file.url : reader.result;
+                img.className = "preview-grid";
+                div.appendChild(img);
+            } else if (this.previewType === "thumbnail") {
+                const img = document.createElement("img");
+                img.src = existing ? file.url : reader.result;
+                img.className = "preview-thumb";
+                div.appendChild(img);
+            } else if (this.previewType === "list") {
+                div.classList.add("list-box-item");
+                const flexDiv = document.createElement("div");
+                flexDiv.className = "preview-list";
+
+                if (this.type === "image") {
+                    const img = document.createElement("img");
+                    img.src = existing ? file.url : reader.result;
+                    img.className = "preview-list-item";
+                    flexDiv.appendChild(img);
+                }
+
+                const p = document.createElement("p");
+                p.textContent = file.name;
+                p.className = "file-name";
+                flexDiv.appendChild(p);
+
+                div.appendChild(flexDiv);
+            } else {
+                div.classList.add("list-box-item");
+                const left = document.createElement("div");
+                left.className = "file-info";
+                const icon = document.createElement("div");
+                icon.className = "file-extension-badge";
+                icon.textContent = file.name.split(".").pop().toUpperCase();
+                left.appendChild(icon);
+                const link = document.createElement("a");
+                link.href = existing ? file.url : URL.createObjectURL(file);
+                link.className = "file-link";
+                link.target = "_blank";
+                link.textContent = file.name;
+                left.appendChild(link);
+                div.appendChild(left);
+            }
+            loader.remove();
+        }
+
+        /* ----------------- REMOVE ----------------- */
+        createRemoveBtn(fileObj, div = null) {
             const btn = document.createElement("button");
             btn.type = "button";
             btn.innerHTML = "&times;";
-            btn.className =
-                "absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition";
+            btn.className = "file-remove";
 
-            btn.onclick = () => this.removeFile(fileObj, div);
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                this.removeFile(fileObj, div);
+            };
 
             return btn;
         }
+
         removeFile(fileObj, div = null) {
             this.files = this.files.filter((f) => f !== fileObj);
             if (div) div.remove();
@@ -388,43 +349,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         attachFilesToForm() {
             const dt = new DataTransfer();
-            this.files.forEach((f) => {
-                if (!f.existing) dt.items.add(f);
-            });
+            this.files.forEach((f) => !f.existing && dt.items.add(f));
             this.fileInput.files = dt.files;
         }
 
-        showError(message) {
-            // Remove existing error messages
-            const existingError = this.container.querySelector(
+        showError(msg) {
+            const existing = this.container.querySelector(
                 ".image-picker-error",
             );
-            if (existingError) {
-                existingError.remove();
-            }
+            if (existing) existing.remove();
 
-            // Create new error message
-            const errorDiv = document.createElement("div");
-            errorDiv.className = "image-picker-error text-red-500 text-xs";
-            errorDiv.textContent = message;
-
-            // Insert error message after the drop area
+            const div = document.createElement("div");
+            div.className = "image-picker-error";
+            div.textContent = msg;
             this.dropArea.parentNode.insertBefore(
-                errorDiv,
+                div,
                 this.dropArea.nextSibling,
             );
 
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (errorDiv.parentNode) {
-                    errorDiv.remove();
-                }
-            }, 5000);
+            setTimeout(() => div.remove(), 5000);
         }
     }
 
-    // Initialize pickers
+    // init
     document
         .querySelectorAll(".image-picker")
-        .forEach((container) => new ImagePicker(container));
+        .forEach((c) => new ImagePicker(c));
 });

@@ -24,11 +24,11 @@ class ImagePickerServiceProvider extends ServiceProvider {
         ], 'image-picker');
         
         $this->publishes([
-            __DIR__ . '/../../resources/js' => \resource_path('js/sqd'),
+            __DIR__ . '/../../resources/js' => \resource_path('js/sgd'),
         ], 'image-picker');
         
         $this->publishes([
-            __DIR__ . '/../../resources/css' => \resource_path('css/sqd'),
+            __DIR__ . '/../../resources/css' => \resource_path('css/sgd'),
         ], 'image-picker');
     }
 }
