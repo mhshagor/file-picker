@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Picker Component Demo</title>
+    <link rel="stylesheet" href="../../css/sgd/file-picker.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .demo-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .demo-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .base-label {
+            display: block;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .space-y-1 {
+            margin-bottom: 20px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .badge-new {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge-popular {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-section {
+                padding: 20px;
+            }
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>File Picker Component</h1>
+      <p class="subtitle">Advanced file and image picker with multiple preview modes</p>
+
+      <div class="demo-section">
+        <h2>Thumbnail Preview <span class="badge badge-popular">Popular</span></h2>
+        <div class="space-y-1">
+          <label for="thumbnail_picker" class="base-label">
+            Thumbnail Preview <small class="text-xs text-gray-500">(Max 2 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="thumbnail_picker"
+            data-id="thumbnail_picker"
+            data-max="2"
+            data-multiple="false"
+            data-type="image"
+            data-accept="image/*"
+            data-preview="true"
+            data-preview-type="thumbnail"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Grid Preview <span class="badge badge-new">New</span></h2>
+        <div class="space-y-1">
+          <label for="grid_picker" class="base-label">
+            Grid Preview <small class="text-xs text-gray-500">(Max 5 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="grid_picker"
+            data-id="grid_picker"
+            data-max="5"
+            data-multiple="true"
+            data-type="image"
+            data-accept="image/*"
+            data-preview="true"
+            data-preview-type="grid"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>List Preview</h2>
+        <div class="space-y-1">
+          <label for="list_picker" class="base-label">
+            List Preview <small class="text-xs text-gray-500">(Max 3 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="list_picker"
+            data-id="list_picker"
+            data-max="3"
+            data-multiple="true"
+            data-type="image"
+            data-accept="image/*"
+            data-preview="true"
+            data-preview-type="list"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Dropdown Preview</h2>
+        <div class="space-y-1">
+          <label for="dropdown_picker" class="base-label">
+            Dropdown Preview <small class="text-xs text-gray-500">(Max 4 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="dropdown_picker"
+            data-id="dropdown_picker"
+            data-max="4"
+            data-multiple="true"
+            data-type="image"
+            data-accept="image/*"
+            data-preview="true"
+            data-preview-type="dropdown"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Required Field with Error</h2>
+        <div class="space-y-1">
+          <label for="required_picker" class="sgd-base-label sgd-required sgd-text-red-500">
+            Required Image <small class="text-xs text-red-500">(Max 2 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="required_picker"
+            data-id="required_picker"
+            data-max="2"
+            data-multiple="false"
+            data-type="image"
+            data-accept="image/*"
+            data-preview="true"
+            data-preview-type="thumbnail"
+          ></div>
+          <p class="sgd-text-red-500 sgd-text-xs sgd-mt-1">This field is required.</p>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>File Picker - All Types</h2>
+        <div class="space-y-1">
+          <label for="file_all_picker" class="base-label">
+            All File Types <small class="text-xs text-gray-500">(Max 5 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="file_all_picker"
+            data-id="file_all_picker"
+            data-max="5"
+            data-multiple="true"
+            data-type="file"
+            data-accept="*/*"
+            data-preview="true"
+            data-preview-type="file"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>File Picker - Documents Only</h2>
+        <div class="space-y-1">
+          <label for="file_doc_picker" class="base-label">
+            Documents Only <small class="text-xs text-gray-500">(Max 3 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="file_doc_picker"
+            data-id="file_doc_picker"
+            data-max="3"
+            data-multiple="true"
+            data-type="file"
+            data-accept=".pdf,.doc,.docx,.txt"
+            data-preview="true"
+            data-preview-type="list"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>File Picker - No Preview</h2>
+        <div class="space-y-1">
+          <label for="file_no_preview_picker" class="base-label">
+            Upload Files <small class="text-xs text-gray-500">(Max 10 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="file_no_preview_picker"
+            data-id="file_no_preview_picker"
+            data-max="10"
+            data-multiple="true"
+            data-type="file"
+            data-accept="*/*"
+            data-preview="false"
+            data-preview-type="dropdown"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Single File Upload <span class="badge badge-popular">Popular</span></h2>
+        <div class="space-y-1">
+          <label for="single_file_picker" class="base-label">
+            Single File <small class="text-xs text-gray-500">(Max 1 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="single_file_picker"
+            data-id="single_file_picker"
+            data-max="1"
+            data-multiple="false"
+            data-type="file"
+            data-accept="*/*"
+            data-preview="true"
+            data-preview-type="thumbnail"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Images Only - Large Files</h2>
+        <div class="space-y-1">
+          <label for="large_images_picker" class="base-label">
+            High-Resolution Images <small class="text-xs text-gray-500">(Max 20 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="large_images_picker"
+            data-id="large_images_picker"
+            data-max="20"
+            data-multiple="true"
+            data-type="image"
+            data-accept="image/*"
+            data-preview="true"
+            data-preview-type="grid"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Media Files Only <span class="badge badge-new">New</span></h2>
+        <div class="space-y-1">
+          <label for="media_picker" class="base-label">
+            Media Files (Images & Videos) <small class="text-xs text-gray-500">(Max 15 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="media_picker"
+            data-id="media_picker"
+            data-max="15"
+            data-multiple="true"
+            data-type="file"
+            data-accept="image/*,video/*"
+            data-preview="true"
+            data-preview-type="list"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Archive Files Only</h2>
+        <div class="space-y-1">
+          <label for="archive_picker" class="base-label">
+            Archive Files <small class="text-xs text-gray-500">(Max 50 MB)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="archive_picker"
+            data-id="archive_picker"
+            data-max="50"
+            data-multiple="true"
+            data-type="file"
+            data-accept=".zip,.rar,.7z,.tar,.gz"
+            data-preview="true"
+            data-preview-type="dropdown"
+          ></div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>Custom Validation Demo</h2>
+        <div class="space-y-1">
+          <label for="custom_picker" class="base-label">
+            Custom Rules <small class="text-xs text-gray-500">(Max 2 MB, PNG/JPG only)</small>
+          </label>
+          <div 
+            class="file-picker"
+            data-name="custom_picker"
+            data-id="custom_picker"
+            data-max="2"
+            data-multiple="true"
+            data-type="image"
+            data-accept=".png,.jpg,.jpeg"
+            data-preview="true"
+            data-preview-type="thumbnail"
+          ></div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>© 2026 File Picker Component • Built with ❤️ for Laravel</p>
+      </div>
+    </div>
+
+    <script src="../../js/sgd/file-picker.js"></script>
+  </body>
+</html>

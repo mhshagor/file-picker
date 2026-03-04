@@ -1,4 +1,4 @@
-# Image Picker for Laravel
+# File Picker for Laravel
 
 A beautiful and customizable image picker component for Laravel applications with drag-and-drop support, multiple preview types, and file validation.
 
@@ -17,15 +17,15 @@ A beautiful and customizable image picker component for Laravel applications wit
 ### 1. Install the package
 
 ```bash
-composer require mhshagor/image-picker:dev-main
+composer require mhshagor/file-picker:dev-main
 # or
-composer require mhshagor/image-picker
+composer require mhshagor/file-picker
 ```
 
 ### 2. Publish the assets
 
 ```bash
-php artisan vendor:publish --tag=image-picker
+php artisan vendor:publish --tag=file-picker
 ```
 
 ### 3. Add to your app.js
@@ -33,7 +33,7 @@ php artisan vendor:publish --tag=image-picker
 Add this line to your `resources/js/app.js`:
 
 ```javascript
-import "./sqd/image-picker.js";
+import "./sqd/file-picker.js";
 ```
 
 ### Add to your app.css
@@ -41,7 +41,7 @@ import "./sqd/image-picker.js";
 Add this line to your `resources/css/app.css`:
 
 ```css
-@import "./sqd/image-picker.css";
+@import "./sqd/file-picker.css";
 ```
 
 ### 4. Compile your assets
@@ -57,7 +57,7 @@ npm run build
 ### Basic Usage
 
 ```blade
-<x-sgd.form.image-picker 
+<x-sgd.form.file-picker 
     name="profile_image" 
     label="Profile Image"
 />
@@ -66,7 +66,7 @@ npm run build
 ### Advanced Usage
 
 ```blade
-<x-sgd.form.image-picker 
+<x-sgd.form.file-picker 
     name="gallery_images" 
     label="Gallery Images"
     :multiple="true"
@@ -100,7 +100,7 @@ npm run build
 ```blade
 preview-type="grid"
 ```
-Shows images in a responsive grid layout with thumbnails.
+Shows files in a responsive grid layout with thumbnails.
 
 ### List Preview
 ```blade
@@ -158,7 +158,7 @@ The component integrates seamlessly with Laravel forms:
 <form method="POST" enctype="multipart/form-data">
     @csrf
     
-    <x-sgd.form.image-picker 
+    <x-sgd.form.file-picker 
         name="avatar" 
         label="Upload Avatar"
         :required="true"
@@ -211,19 +211,19 @@ public function store(Request $request)
 
 If you want to customize the component, you can modify the published files:
 
-- **Views**: `resources/views/components/sgd/form/image-picker.blade.php`
-- **JavaScript**: `resources/js/sqd/image-picker.js`
+- **Views**: `resources/views/components/sgd/form/file-picker.blade.php`
+- **JavaScript**: `resources/js/sqd/file-picker.js`
 
 ### Custom Styling
 
 Add custom CSS to override default styles:
 
 ```css
-.image-picker .base-input {
+.file-picker .base-input {
     /* Custom input styling */
 }
 
-.image-picker .base-label {
+.file-picker .base-label {
     /* Custom label styling */
 }
 ```

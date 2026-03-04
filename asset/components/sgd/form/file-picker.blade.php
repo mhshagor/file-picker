@@ -6,7 +6,7 @@
     'max' => 2,
     'type' => 'image', // image, file
     'preview' => true,
-    'previewType' => 'thumbnail', // grid, list, file, thumbnail, dropdown
+    'previewType' => 'dropdown', // grid, list, file, thumbnail, dropdown
     'label' => '',
     'labelClass' => '',
     'required' => false,
@@ -25,7 +25,7 @@
             for="{{ $id }}"
             class="base-label {{ $labelClass }}"
         >
-            {{ headline($label) }} <small
+            {{ Str::headline($label) }} <small
                 class="text-xs {{ $errors->has($name) ? ' text-red-500' : 'text-gray-500' }}">(Max {{ $max }}
                 MB)</small>
         </label>
@@ -39,7 +39,7 @@
         //$value = $multiple ? $imagesArray : $singleImage;
     @endphp
     <div
-        {{ $attributes->merge(['class' => 'image-picker ']) }}
+        {{ $attributes->merge(['class' => 'file-picker ']) }}
         data-name="{{ $name }}"
         data-id="{{ $id }}"
         data-max="{{ $max }}"

@@ -1,9 +1,9 @@
 {
-    "name": "mhshagor/image-picker",
-    "description": "Image Picker - Beautiful image picker for managing images",
+    "name": "mhshagor/file-picker",
+    "description": "File Picker - Beautiful file picker for managing image/files",
     "keywords": [
         "laravel",
-        "image-picker"
+        "file-picker"
     ],
     "version": "1.0.2",
     "type": "library",
@@ -18,12 +18,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Mhshagor\\ImagePicker\\": "src/"
+            "Mhshagor\\FilePicker\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Mhshagor\\ImagePicker\\Tests\\": "tests/"
+            "Mhshagor\\FilePicker\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -32,7 +32,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Mhshagor\\ImagePicker\\Providers\\ImagePickerServiceProvider"
+                "Mhshagor\\FilePicker\\Providers\\PackageServiceProvider"
             ]
         }
     },
