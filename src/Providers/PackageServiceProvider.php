@@ -41,9 +41,10 @@ class PackageServiceProvider extends ServiceProvider
     private function publishFilePicker($package)
     {
         return [
-            $this->basePath . '/resources/demo/file-picker.html' => resource_path('views/sgd/file-picker.html'),
-            $this->basePath . '/resources/js' => resource_path('js/sgd'),
-            $this->basePath . '/resources/css' => resource_path('css/sgd'),
+            $this->basePath . '/asset/demo/file-picker.html' => resource_path('views/sgd/file-picker.html'),
+            $this->basePath . '/asset/js' => resource_path('js/sgd'),
+            $this->basePath . '/asset/css' => resource_path('css/sgd'),
+            $this->basePath . '/asset/components' => resource_path('views/components'),
         ];
     }
 
@@ -53,7 +54,9 @@ class PackageServiceProvider extends ServiceProvider
         foreach ($this->packages as $package) {
             $this->publishPackage($package);
         }
-        $this->publishAll();
+
+        Blade::componentNamespace('App\\View\\Components', 'app');
+        Blade::componentNamespace('Mhshagor\\FilePicker\\View\\Components', 'sgd');
     }
     
     public function register()
