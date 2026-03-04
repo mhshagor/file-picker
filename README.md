@@ -84,27 +84,19 @@ npm run build
 
 Copy these files from the package into your project and include them in your HTML:
 
-- **CSS**: `/vendor/mhshagor/file-picker/asset/css/file-picker.css`
-- **JS**: `/vendor/mhshagor/file-picker/asset/js/file-picker.js`
-- **Demo HTML**: `/vendor/mhshagor/file-picker/asset/demo/file-picker.html`
-
-For non-Laravel projects, you only need the built assets (`dist/`) and the demo HTML file.
-
-Generate a `dist/` folder (recommended):
-
-```bash
-npm run build
-```
+- **CSS**: `/vendor/mhshagor/file-picker/asset/css/file-picker.css -> public/css/file-picker.css`
+- **JS**: `/vendor/mhshagor/file-picker/asset/js/file-picker.js -> public/js/file-picker.js`
+- **Demo HTML**: `/vendor/mhshagor/file-picker/asset/demo/file-picker.html -> ./file-picker.html`
 
 Then use:
 
-- **CSS**: `dist/file-picker.min.css`
-- **JS**: `dist/file-picker.min.js`
+- **CSS**: `public/css/file-picker.css`
+- **JS**: `public/js/file-picker.js`
 
 Example:
 
 ```html
-<link rel="stylesheet" href="./file-picker.min.css" />
+<link rel="stylesheet" href="./file-picker.css" />
 
 <div
   class="file-picker"
@@ -118,7 +110,7 @@ Example:
   data-preview-type="grid"
 ></div>
 
-<script src="./file-picker.min.js"></script>
+<script src="./file-picker.js"></script>
 ```
 
 ## Parameters
