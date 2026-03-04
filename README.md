@@ -84,8 +84,9 @@ npm run build
 
 Copy these files from the package into your project and include them in your HTML:
 
-- **CSS**: `asset/css/file-picker.css`
-- **JS**: `asset/js/file-picker.js`
+- **CSS**: `/vendor/mhshagor/file-picker/asset/css/file-picker.css`
+- **JS**: `/vendor/mhshagor/file-picker/asset/js/file-picker.js`
+- **Demo HTML**: `/vendor/mhshagor/file-picker/asset/demo/file-picker.html`
 
 For non-Laravel projects, you only need the built assets (`dist/`) and the demo HTML file.
 
