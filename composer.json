@@ -8,7 +8,6 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": "^8.0"
         
     },
     "require-dev": {
@@ -28,11 +27,6 @@
         "test": "vendor/bin/pest"
     },
     "extra": {
-        "laravel": {
-            "providers": [
-                "Mhshagor\\FilePicker\\Providers\\PackageServiceProvider"
-            ]
-        }
     },
     "authors": [
         {
