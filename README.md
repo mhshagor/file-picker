@@ -33,7 +33,7 @@ php artisan vendor:publish --tag=file-picker
 Add this line to your `resources/js/app.js`:
 
 ```javascript
-import "./sqd/file-picker.js";
+import "./sgd/file-picker.js";
 ```
 
 ### Add to your app.css
@@ -41,7 +41,7 @@ import "./sqd/file-picker.js";
 Add this line to your `resources/css/app.css`:
 
 ```css
-@import "./sqd/file-picker.css";
+@import "./sgd/file-picker.css";
 ```
 
 ### 4. Compile your assets
@@ -76,6 +76,44 @@ npm run build
     :required="true"
     class="custom-class"
 />
+```
+
+## Standalone HTML/JS Usage (No Laravel)
+
+Copy these files from the package into your project and include them in your HTML:
+
+- **CSS**: `asset/css/file-picker.css`
+- **JS**: `asset/js/file-picker.js`
+
+Or generate a `dist/` folder (recommended):
+
+```bash
+npm run build
+```
+
+Then use:
+
+- **CSS**: `dist/file-picker.min.css`
+- **JS**: `dist/file-picker.min.js`
+
+Example:
+
+```html
+<link rel="stylesheet" href="./file-picker.min.css" />
+
+<div
+  class="file-picker"
+  data-name="files"
+  data-id="files"
+  data-max="5"
+  data-multiple="true"
+  data-type="image"
+  data-accept="image/*"
+  data-preview="true"
+  data-preview-type="grid"
+></div>
+
+<script src="./file-picker.min.js"></script>
 ```
 
 ## Parameters

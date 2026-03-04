@@ -4,7 +4,6 @@ namespace Mhshagor\FilePicker\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\File;
 
 class PackageServiceProvider extends ServiceProvider
 {
@@ -54,9 +53,6 @@ class PackageServiceProvider extends ServiceProvider
         foreach ($this->packages as $package) {
             $this->publishPackage($package);
         }
-
-        Blade::componentNamespace('App\\View\\Components', 'app');
-        Blade::componentNamespace('Mhshagor\\FilePicker\\View\\Components', 'sgd');
     }
     
     public function register()
