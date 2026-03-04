@@ -2,15 +2,13 @@
     "name": "mhshagor/file-picker",
     "description": "File Picker - Beautiful file picker for managing image/files",
     "keywords": [
-        "laravel",
         "file-picker"
     ],
     "version": "1.0.4",
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": "^8.0",
-        "laravel/framework": "^10.0|^11.0|^12.0"
+        "php": "^8.0"
         
     },
     "require-dev": {
