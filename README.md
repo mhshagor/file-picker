@@ -22,6 +22,8 @@ composer require mhshagor/file-picker:dev-main
 composer require mhshagor/file-picker
 ```
 
+If you are not using Laravel, you do not need Composer. Use the standalone instructions below.
+
 ### 2. Publish the assets
 
 ```bash
@@ -85,7 +87,9 @@ Copy these files from the package into your project and include them in your HTM
 - **CSS**: `asset/css/file-picker.css`
 - **JS**: `asset/js/file-picker.js`
 
-Or generate a `dist/` folder (recommended):
+For non-Laravel projects, you only need the built assets (`dist/`) and the demo HTML file.
+
+Generate a `dist/` folder (recommended):
 
 ```bash
 npm run build
