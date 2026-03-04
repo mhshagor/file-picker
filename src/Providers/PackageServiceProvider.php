@@ -40,10 +40,10 @@ class PackageServiceProvider extends ServiceProvider
     private function publishFilePicker($package)
     {
         return [
-            $this->basePath . '/asset/demo/file-picker.html' => resource_path('views/sgd/file-picker.html'),
-            $this->basePath . '/asset/js' => resource_path('js/sgd'),
-            $this->basePath . '/asset/css' => resource_path('css/sgd'),
-            $this->basePath . '/asset/components' => resource_path('views/components'),
+            $this->basePath . '/assets/demo/file-picker.html' => resource_path('views/sgd/file-picker.html'),
+            $this->basePath . '/assets/js' => resource_path('js/sgd'),
+            $this->basePath . '/assets/css' => resource_path('css/sgd'),
+            $this->basePath . '/assets/components' => resource_path('views/components'),
         ];
     }
 
