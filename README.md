@@ -62,6 +62,7 @@ npm run build
 <x-sgd.form.file-picker 
     name="profile_image" 
     label="Profile Image"
+    preview-type="profile"
 />
 ```
 
@@ -131,6 +132,12 @@ Example:
 
 ## Preview Types
 
+### Profile Preview
+```blade
+preview-type="profile"
+```
+Shows a circular profile picture preview.
+
 ### Grid Preview
 ```blade
 preview-type="grid"
@@ -196,6 +203,7 @@ The component integrates seamlessly with Laravel forms:
     <x-sgd.form.file-picker 
         name="avatar" 
         label="Upload Avatar"
+        preview-type="profile"
         :required="true"
     />
     

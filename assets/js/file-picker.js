@@ -14,8 +14,13 @@ document.addEventListener("DOMContentLoaded", () => {
             this.type = container.dataset.type || "image"; // image or file
             this.accept = container.dataset.accept || "";
             this.preview = container.dataset.preview === "true";
-            this.previewType = container.dataset.previewType || "grid"; // grid, list, dropdown, thumbnail
+            this.previewType = container.dataset.previewType || "grid"; // grid, list, dropdown, thumbnail, profile
             this.value = container.dataset.value;
+            if (this.previewType === "profile") {
+                this.isMultiple = false;
+                this.type = "image";
+                this.preview = true;
+            }
 
             this.init();
         }
@@ -44,6 +49,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             urls.forEach((url) => {
+                if (this.previewType === "profile") {
+                    this.dropArea.innerHTML = `
+                        <img src="${url}" class="sgd-preview-profile">
+                    `;
+
+                    this.dropArea.appendChild(this.fileInput);
+                }
                 const fileObj = {
                     name: url.split("/").pop(),
                     url,
@@ -53,7 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 else this.files.push(fileObj);
 
                 if (this.preview) {
-                    if (this.previewType === "dropdown") {
+                    if (this.previewType === "profile") {
+                        // UI handled above
+                    } else if (this.previewType === "dropdown") {
                         this.updateDropdownUI();
                     } else {
                         this.gallery.appendChild(
@@ -72,14 +86,14 @@ document.addEventListener("DOMContentLoaded", () => {
             this.dropArea.className = "sgd-drop-area";
 
             this.dropArea.innerHTML = `
-        <span class="sgd-drop-area-text">Drag & drop files or click to select</span>
-        <div class="sgd-drop-trigger sgd-hidden" data-dropdown-trigger>
-          <span class="sgd-file-count" data-count>0</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="sgd-drop-arrow" data-arrow fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
-        </div>
-      `;
+                <span class="sgd-drop-area-text">Drag & drop files or click to select</span>
+                <div class="sgd-drop-trigger sgd-hidden" data-dropdown-trigger>
+                    <span class="sgd-file-count" data-count>0</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="sgd-drop-arrow" data-arrow fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </div>
+            `;
 
             this.container.appendChild(this.dropArea);
 
@@ -88,6 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
             );
             this.arrow = this.dropArea.querySelector("[data-arrow]");
             this.countBadge = this.dropArea.querySelector("[data-count]");
+            if (this.previewType === "profile") {
+                this.dropArea.classList.add("sgd-profile-area");
+            }
         }
 
         /* ----------------- FILE INPUT ----------------- */
@@ -107,11 +124,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* ----------------- GALLERY ----------------- */
         createGallery() {
+            // profile preview
+            if (this.previewType === "profile") {
+                return;
+            }
             this.gallery = document.createElement("div");
             this.gallery.className = "sgd-file-gallery";
 
             if (this.previewType === "dropdown") {
-                this.gallery.className = "sgd-file-gallery sgd-dropdown sgd-divide-y";
+                this.gallery.className =
+                    "sgd-file-gallery sgd-dropdown sgd-divide-y";
                 this.gallery.style.top = "100%";
                 this.gallery.style.left = "0";
                 this.container.classList.add("sgd-relative");
@@ -182,13 +204,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (!this.isMultiple) {
                     this.files = [file];
-                    this.gallery.innerHTML = "";
+                    if (this.gallery) this.gallery.innerHTML = "";
                 } else this.files.push(file);
 
                 if (this.preview) {
-                    if (this.previewType === "dropdown")
+                    if (this.previewType === "profile") {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+
+                        reader.onload = () => {
+                            this.dropArea.innerHTML = `
+                                <img src="${reader.result}" class="sgd-preview-profile">
+                            `;
+
+                            this.dropArea.appendChild(this.fileInput);
+                        };
+                    } else if (this.previewType === "dropdown") {
                         this.updateDropdownUI();
-                    else this.gallery.appendChild(this.renderPreview(file));
+                    } else {
+                        this.gallery.appendChild(this.renderPreview(file));
+                    }
                 } else {
                     const div = document.createElement("div");
                     div.className = "sgd-file-item";
@@ -374,7 +409,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // init
-    document
-        .querySelectorAll(".file-picker")
-        .forEach((c) => new FilePicker(c));
+    document.querySelectorAll(".file-picker").forEach((c) => new FilePicker(c));
 });

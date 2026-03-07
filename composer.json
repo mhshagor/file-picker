@@ -4,7 +4,7 @@
     "keywords": [
         "file-picker"
     ],
-    "version": "1.0.7",
+    "version": "1.0.8",
     "type": "library",
     "license": "MIT",
     "require": {
