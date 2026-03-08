@@ -99,17 +99,17 @@ Example:
 ```html
 <link rel="stylesheet" href="./file-picker.css" />
 
-<div
+<input
   class="file-picker"
-  data-name="files"
-  data-id="files"
-  data-max="5"
-  data-multiple="true"
-  data-type="image"
-  data-accept="image/*"
-  data-preview="true"
-  data-preview-type="grid"
-></div>
+  name="files"
+  id="files"
+  max="5"
+  multiple="true"
+  type="image"
+  accept="image/*"
+  preview="true"
+  preview-type="grid"
+/>
 
 <script src="./file-picker.js"></script>
 ```

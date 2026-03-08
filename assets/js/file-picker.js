@@ -4,22 +4,59 @@
  */
 document.addEventListener("DOMContentLoaded", () => {
     class FilePicker {
-        constructor(container) {
-            this.container = container;
+        constructor(originalContainer) {
+            let container = originalContainer;
+            this.isInputTag = container.tagName.toLowerCase() === "input";
+
+            function getConf(attr) {
+                if (container.hasAttribute(attr))
+                    return container.getAttribute(attr);
+                if (container.dataset[attr] !== undefined)
+                    return container.dataset[attr];
+                return null;
+            }
+
             this.files = [];
-            this.isMultiple = container.dataset.multiple === "true";
-            this.maxSizeMB = parseFloat(container.dataset.max || 2);
-            this.inputName = container.dataset.name;
-            this.inputId = container.dataset.id;
-            this.type = container.dataset.type || "image"; // image or file
-            this.accept = container.dataset.accept || "";
-            this.preview = container.dataset.preview === "true";
-            this.previewType = container.dataset.previewType || "grid"; // grid, list, dropdown, thumbnail, profile
-            this.value = container.dataset.value;
+
+            const multipleVal = getConf("multiple");
+            this.isMultiple =
+                multipleVal === "true" ||
+                multipleVal === "multiple" ||
+                (container.hasAttribute("multiple") &&
+                    container.getAttribute("multiple") === "");
+
+            this.maxSizeMB = parseFloat(getConf("max") || 2);
+            this.inputName = getConf("name");
+            this.inputId = getConf("id");
+            this.type = getConf("type") || "image";
+            this.accept = getConf("accept") || "";
+            this.preview = getConf("preview") === "true";
+            this.previewType = getConf("preview-type") || "grid";
+            this.value = getConf("value");
+
             if (this.previewType === "profile") {
                 this.isMultiple = false;
                 this.type = "image";
                 this.preview = true;
+            }
+            if (
+                this.type === "file" &&
+                !["list", "dropdown", "file"].includes(this.previewType)
+            ) {
+                this.previewType = "file";
+            }
+
+            if (this.isInputTag) {
+                this.container = document.createElement("div");
+                this.container.className = originalContainer.className;
+                originalContainer.classList.remove("file-picker");
+                originalContainer.parentNode.insertBefore(
+                    this.container,
+                    originalContainer,
+                );
+                this.fileInput = originalContainer;
+            } else {
+                this.container = originalContainer;
             }
 
             this.init();
@@ -109,15 +146,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* ----------------- FILE INPUT ----------------- */
         createHiddenInput() {
-            this.fileInput = document.createElement("input");
+            if (!this.isInputTag) {
+                this.fileInput = document.createElement("input");
+            }
             this.fileInput.type = "file";
-            this.fileInput.accept = this.accept;
-            if (this.isMultiple) this.fileInput.multiple = true;
+            if (this.accept) this.fileInput.accept = this.accept;
+
+            if (this.isMultiple) {
+                this.fileInput.multiple = true;
+                let finalName = this.inputName || this.fileInput.name || "";
+                if (finalName && !finalName.endsWith("[]")) {
+                    finalName += "[]";
+                }
+                this.fileInput.name = finalName;
+            } else {
+                this.fileInput.multiple = false;
+                if (this.inputName) this.fileInput.name = this.inputName;
+            }
+
             this.fileInput.hidden = true;
-            this.fileInput.name = this.isMultiple
-                ? this.inputName + "[]"
-                : this.inputName;
-            this.fileInput.id = this.inputId;
+            if (this.inputId) this.fileInput.id = this.inputId;
 
             this.dropArea.appendChild(this.fileInput);
         }
@@ -189,16 +237,18 @@ document.addEventListener("DOMContentLoaded", () => {
         addFiles(newFiles) {
             newFiles.forEach((file) => {
                 if (this.type === "image" && !file.type.startsWith("image/")) {
-                    this.showError(
+                    /* this.showError(
                         `Invalid file type. ${file.name} is not an image.`,
-                    );
+                    ); */
+                    this.showError(`Invalid file type.`);
                     return;
                 }
 
                 if (file.size / 1024 / 1024 > this.maxSizeMB) {
-                    this.showError(
+                    /* this.showError(
                         `File ${file.name} is too large. Max ${this.maxSizeMB}MB.`,
-                    );
+                    ); */
+                    this.showError(`Selected file is too large.`);
                     return;
                 }
 

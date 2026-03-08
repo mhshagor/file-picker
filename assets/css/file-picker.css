@@ -3,6 +3,10 @@
   position: relative;
 }
 
+input.file-picker {
+  display: none;
+}
+
 /* DROP AREA */
 .sgd-drop-area {
   border: 1px dashed #d1d5db;

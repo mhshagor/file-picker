@@ -6,7 +6,7 @@
     'max' => 2,
     'type' => 'image', // image, file
     'preview' => true,
-    'previewType' => 'dropdown', // grid, list, file, thumbnail, dropdown
+    'previewType' => 'dropdown', // grid, list, file, thumbnail, dropdown, profile
     'label' => '',
     'labelClass' => '',
     'required' => false,
@@ -38,18 +38,18 @@
         //$singleImage = $logo1;
         //$value = $multiple ? $imagesArray : $singleImage;
     @endphp
-    <div
+    <input
         {{ $attributes->merge(['class' => 'file-picker ']) }}
-        data-name="{{ $name }}"
-        data-id="{{ $id }}"
-        data-max="{{ $max }}"
-        data-multiple="{{ $multiple ? 'true' : 'false' }}"
-        data-type="{{ $type }}"
-        data-accept="{{ $type === 'file' ? '*/*' : 'image/*' }}"
-        data-preview="{{ $preview ? 'true' : 'false' }}"
-        data-preview-type="{{ $previewType }}"
-        data-value='@json($value)'
-    ></div>
+        name="{{ $name }}"
+        id="{{ $id }}"
+        max="{{ $max }}"
+        multiple="{{ $multiple ? 'true' : 'false' }}"
+        type="{{ $type }}"
+        accept="{{ $type === 'file' ? '*/*' : 'image/*' }}"
+        preview="{{ $preview ? 'true' : 'false' }}"
+        preview-type="{{ $previewType }}"
+        value='@json($value)'
+    />
     @error($name)
         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
     @enderror
