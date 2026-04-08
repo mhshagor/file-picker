@@ -1,50 +1,46 @@
 {
-    "name": "mhshagor/file-picker",
-    "description": "File Picker - Beautiful file picker for managing image/files",
-    "keywords": [
-        "file-picker"
-    ],
-    "version": "1.0.9",
-    "type": "library",
-    "license": "MIT",
-    "require": {
-        
-    },
-    "require-dev": {
-        
-    },
-    "autoload": {
-        "psr-4": {
-            "Mhshagor\\FilePicker\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Mhshagor\\FilePicker\\Tests\\": "tests/"
-        }
-    },
-    "scripts": {
-        "test": "vendor/bin/pest"
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Mhshagor\\FilePicker\\Providers\\PackageServiceProvider"
-            ]
-        }
-    },
-    "authors": [
-        {
-            "name": "M.H SHAGOR",
-            "email": "srq001100@gmail.com"
-        }
-    ],
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+  "name": "mhshagor/file-picker",
+  "description": "File Picker - Beautiful file picker for managing image/files",
+  "keywords": [
+    "file-picker"
+  ],
+  "version": "1.1.0",
+  "type": "library",
+  "license": "MIT",
+  "require": {},
+  "require-dev": {},
+  "autoload": {
+    "psr-4": {
+      "Mhshagor\\FilePicker\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mhshagor\\FilePicker\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/pest"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Mhshagor\\FilePicker\\Providers\\PackageServiceProvider"
+      ]
+    }
+  },
+  "authors": [
+    {
+      "name": "M.H SHAGOR",
+      "email": "srq001100@gmail.com"
+    }
+  ],
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
 }

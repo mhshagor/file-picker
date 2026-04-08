@@ -16,7 +16,8 @@
 @php
     $id = $id ? $id : $name;
     $labelClass .= $required ? ' required' : '';
-    $labelClass .= $errors->has($name) ? ' text-red-500' : '';
+    $hasError = isset($errors) && $errors->has($name);
+    $labelClass .= $hasError ? ' text-red-500' : '';
     $previewType = $type === 'file' ? ($previewType === 'dropdown' ? 'dropdown' : 'file') : $previewType;
 @endphp
 <div class="space-y-1">
@@ -25,8 +26,8 @@
             for="{{ $id }}"
             class="base-label {{ $labelClass }}"
         >
-            {{ Str::headline($label) }} <small
-                class="text-xs {{ $errors->has($name) ? ' text-red-500' : 'text-gray-500' }}">(Max {{ $max }}
+            {{ Str::headline($label) }} <small class="text-xs {{ $hasError ? ' text-red-500' : 'text-gray-500' }}">(Max
+                {{ $max }}
                 MB)</small>
         </label>
     @endif
@@ -50,7 +51,7 @@
         preview-type="{{ $previewType }}"
         value='@json($value)'
     />
-    @error($name)
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-    @enderror
+    @if (isset($errors) && $errors->has($name))
+        <p class="text-red-500 text-xs mt-1">{{ $errors->first($name) }}</p>
+    @endif
 </div>
