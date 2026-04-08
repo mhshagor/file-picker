@@ -20,6 +20,7 @@
     $labelClass .= $hasError ? ' text-red-500' : '';
     $previewType = $type === 'file' ? ($previewType === 'dropdown' ? 'dropdown' : 'file') : $previewType;
 @endphp
+
 <div class="space-y-1">
     @if ($label)
         <label

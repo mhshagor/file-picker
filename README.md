@@ -17,18 +17,23 @@ A beautiful and customizable image picker component for Laravel applications wit
 ### 1. Install the package
 
 ```bash
-composer require mhshagor/file-picker:dev-main
-# or
 composer require mhshagor/file-picker
 ```
 
 If you are not using Laravel, you do not need Composer. Use the standalone instructions below.
 
-### 2. Publish the assets
+### 2. Publish Assets
+
+Publish the CSS and JS files to your resources folder:
 
 ```bash
 php artisan vendor:publish --tag=file-picker
 ```
+
+This will copy files to:
+
+- `resources/js/vendor/file-picker/file-picker.js`
+- `resources/css/vendor/file-picker/file-picker.css`
 
 ### 3. Add to your app.js
 
@@ -38,7 +43,7 @@ Add this line to your `resources/js/app.js`:
 import "./vendor/file-picker/file-picker.js";
 ```
 
-### Add to your app.css
+### 4. Add to your app.css
 
 Add this line to your `resources/css/app.css`:
 
@@ -46,7 +51,7 @@ Add this line to your `resources/css/app.css`:
 @import "./vendor/file-picker/file-picker.css";
 ```
 
-### 4. Compile your assets
+### 5. Compile your assets
 
 ```bash
 npm run dev
@@ -97,7 +102,7 @@ Then use:
 Example:
 
 ```html
-<link rel="stylesheet" href="./file-picker.css" />
+<link rel="stylesheet" href="public/css/file-picker.css" />
 
 <input
   class="file-picker"
@@ -111,7 +116,7 @@ Example:
   preview-type="grid"
 />
 
-<script src="./file-picker.js"></script>
+<script src="public/js/file-picker.js"></script>
 ```
 
 ## Parameters
